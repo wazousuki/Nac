@@ -1,0 +1,2 @@
+HTTPS	https://github.com/wazousuki/Nac.git
+SSH		git@github.com:wazousuki/Nac.git
