@@ -23,7 +23,7 @@ server.listen(process.env.PORT || 3000);
 
 // サーバー起動確認
 server.get('/', (req, res) => {
-    res.send('Hello World!' + CONSUMERKEY);
+    res.send('Hello World!');
 });
 
 // Botからメッセージに応答
