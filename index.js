@@ -29,7 +29,7 @@ server.get('/', (req, res) => {
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
     res.sendStatus(200);
-
+console.log('/callback');
     const message = req.body.content.text;
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
