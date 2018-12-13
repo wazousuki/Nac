@@ -78,7 +78,7 @@ server.post('/callback', (req, res) => {
 
     getJWT((jwttoken) => {
         getServerToken(jwttoken, (newtoken) => {
-            sendMessageText(newtoken, accountId, rsvmessage);
+            sendMessageText(newtoken, accountId, sendmessage);
         });
     });
 });
