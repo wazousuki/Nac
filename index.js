@@ -58,7 +58,7 @@ setInterval(function() {
 　　　　 // error;
         console.log(error);
       });
-}, 15000);
+}, 30000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
@@ -68,7 +68,7 @@ server.post('/callback', (req, res) => {
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
     const returnValue = req.body.content.postback;
-    const sendmessage = "";
+    const sendmessage = "？？？";
 
     if(returnValue == "RTN_OK"){
       sendmessage = "承認の旨を通知しました";
@@ -78,7 +78,7 @@ server.post('/callback', (req, res) => {
 
     getJWT((jwttoken) => {
         getServerToken(jwttoken, (newtoken) => {
-            sendMessageText(newtoken, accountId, sendmessage);
+            sendMessageText(newtoken, accountId, rsvmessage);
         });
     });
 });
