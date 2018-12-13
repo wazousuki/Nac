@@ -40,13 +40,15 @@ server.get('/', (req, res) => {
 
 // 1秒置きにデータを確認
 setInterval(function() {
-  db.any("select * from TEST where No=$1", [1])
+    db.any("select * from TEST where No=$1", [1])
       .then(function (data) {
         // success;
 
+        var message = "";
+
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageButton(newtoken, "mayukino@taxnac");
+                sendMessageButton(newtoken, "mayukino@taxnac", message);
             });
         });
 
@@ -62,9 +64,18 @@ setInterval(function() {
 server.post('/callback', (req, res) => {
     res.sendStatus(200);
 
-    const message = req.body.content.text;
+    const rsvmessage = req.body.content.text;
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
+    const sendmessage = "";
+
+    if(rsvmessage == "RTN_OK"){
+      sendmessage = "承認の旨を通知しました";
+    }else if(rsvmessage == "RTN_NO"){
+      sendmessage = "不承認の旨を通知しました";
+    }else{
+      sendmessage = "";
+    }
 
     getJWT((jwttoken) => {
         getServerToken(jwttoken, (newtoken) => {
@@ -137,7 +148,7 @@ function sendMessageText(token, accountId, message) {
     });
 }
 
-function sendMessageButton(token, accountId) {
+function sendMessageButton(token, accountId, message) {
     const postdata = {
         url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
         headers : {
