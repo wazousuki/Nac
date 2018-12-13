@@ -16,7 +16,19 @@ const CONSUMERKEY = process.env.CONSUMERKEY;
 const PRIVATEKEY = process.env.PRIVATEKEY;
 const BOTNO = process.env.BOTNO;
 
-var db = require('db');
+///////////////////////////////////////////////
+var options = {
+    // initialization options;
+};
+
+const pgp = require("pg-promise")(options);
+//変数
+const DB_URL = process.env.DATABASE_URL;
+
+var db = pgp(DB_URL);
+
+module.exports = db;
+///////////////////////////////////////////////
 
 server.use(bodyParser.json());
 
