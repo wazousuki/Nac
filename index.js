@@ -69,9 +69,9 @@ server.post('/callback', (req, res) => {
     const accountId = req.body.source.accountId;
     const sendmessage = "";
 
-    if(rsvmessage == "RTN_OK"){
+    if(rsvmessage == "承認する"){
       sendmessage = "承認の旨を通知しました";
-    }else if(rsvmessage == "RTN_NO"){
+    }else if(rsvmessage == "承認しない"){
       sendmessage = "不承認の旨を通知しました";
     }else{
       sendmessage = "";
