@@ -67,19 +67,18 @@ server.post('/callback', (req, res) => {
     const rsvmessage = req.body.content.text;
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
+    const returnValue = req.body.content.postback;
     const sendmessage = "";
 
-    if(rsvmessage == "承認する"){
+    if(returnValue == "RTN_OK"){
       sendmessage = "承認の旨を通知しました";
-    }else if(rsvmessage == "承認しない"){
+    }else if(returnValue == "RTN_NO"){
       sendmessage = "不承認の旨を通知しました";
-    }else{
-      sendmessage = "";
     }
 
     getJWT((jwttoken) => {
         getServerToken(jwttoken, (newtoken) => {
-            sendMessageText(newtoken, accountId, message);
+            sendMessageText(newtoken, accountId, sendmessage);
         });
     });
 });
