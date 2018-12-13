@@ -15,18 +15,14 @@ const SERVERID = process.env.SERVERID;
 const CONSUMERKEY = process.env.CONSUMERKEY;
 const PRIVATEKEY = process.env.PRIVATEKEY;
 const BOTNO = process.env.BOTNO;
+const DB_URL = process.env.DATABASE_URL;
 
 ///////////////////////////////////////////////
 var options = {
     // initialization options;
 };
-
 const pgp = require("pg-promise")(options);
-//変数
-const DB_URL = process.env.DATABASE_URL;
-
 var db = pgp(DB_URL);
-
 module.exports = db;
 ///////////////////////////////////////////////
 
@@ -72,7 +68,7 @@ server.post('/callback', (req, res) => {
 
     getJWT((jwttoken) => {
         getServerToken(jwttoken, (newtoken) => {
-            sendMessage(newtoken, accountId, message);
+            sendMessageText(newtoken, accountId, message);
         });
     });
 });
@@ -116,7 +112,7 @@ function getServerToken(jwttoken, callback) {
     });
 }
 
-function sendMessage(token, accountId, message) {
+function sendMessageText(token, accountId, message) {
     const postdata = {
         url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
         headers : {
@@ -130,6 +126,38 @@ function sendMessage(token, accountId, message) {
             "content" : {
                 "type" : "text",
                 "text" : message
+            }
+        }
+    };
+    request.post(postdata, (error, response, body) => {
+        if (error) {
+          console.log(error);
+        }
+        console.log(body);
+    });
+}
+
+function sendMessageButton(token, accountId, message) {
+    const postdata = {
+        url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
+        headers : {
+          'Content-Type' : 'application/json;charset=UTF-8',
+          'consumerKey' : CONSUMERKEY,
+          'Authorization' : "Bearer " + token
+        },
+        json: {
+            "botNo" : Number(BOTNO),
+            "accountId" : accountId,
+            "content" : {
+                "type" : "buttonTemplate",
+                "contentText": "承認しますか？",
+                "buttons" : [{
+                  "text": "承認する"
+                  "postback": "RTN_OK"
+                },{
+                  "text": "承認しない"
+                  "postback": "RTN_NO"
+                }]
             }
         }
     };
