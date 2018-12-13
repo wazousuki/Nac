@@ -34,8 +34,6 @@ server.post('/callback', (req, res) => {
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
 
-    sendMsg(accountId, new TextMessage(message));
-
     getJWT((jwttoken) => {
         getServerToken(jwttoken, (newtoken) => {
             sendMessage(newtoken, accountId, message);
