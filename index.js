@@ -140,5 +140,3 @@ function sendMessage(token, accountId, message) {
         console.log(body);
     });
 }
-
-var conString = process.env.DATABASE_URL || "postgres://[ユーザ名]:[パスワード]@
