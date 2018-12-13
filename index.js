@@ -19,12 +19,29 @@ const BOTNO = process.env.BOTNO;
 server.use(bodyParser.json());
 
 // Webアプリケーション起動
-server.listen(process.env.PORT || 3000);
+var app = server.listen(process.env.PORT || 3000, function(){
+    console.log("Node.js is listening to PORT:" + app.address().port);
+});
 
 // サーバー起動確認
 server.get('/', (req, res) => {
     res.send('Hello World!');
 });
+
+// 1秒置きにデータを確認
+setInterval(function() {
+  var db = require('db');
+ 
+  db.any("select * from TEST where No=$1", [1])
+      .then(function (data) {
+        // success;
+        console.log(data);
+      })
+      .catch(function (error) {
+　　　　　　　　　　　　　　　　// error;
+        console.log(error);
+      });
+}, 1000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
@@ -104,3 +121,5 @@ function sendMessage(token, accountId, message) {
         console.log(body);
     });
 }
+
+var conString = process.env.DATABASE_URL || "postgres://[ユーザ名]:[パスワード]@
