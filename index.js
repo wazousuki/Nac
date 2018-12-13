@@ -46,7 +46,7 @@ setInterval(function() {
 
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessage(newtoken, "mayukino@taxnac", "成功");
+                sendMessageButton(newtoken, "mayukino@taxnac");
             });
         });
 
@@ -137,7 +137,7 @@ function sendMessageText(token, accountId, message) {
     });
 }
 
-function sendMessageButton(token, accountId, message) {
+function sendMessageButton(token, accountId) {
     const postdata = {
         url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
         headers : {
