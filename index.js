@@ -16,6 +16,8 @@ const CONSUMERKEY = process.env.CONSUMERKEY;
 const PRIVATEKEY = process.env.PRIVATEKEY;
 const BOTNO = process.env.BOTNO;
 
+var db = require('db');
+
 server.use(bodyParser.json());
 
 // Webアプリケーション起動
@@ -30,18 +32,23 @@ server.get('/', (req, res) => {
 
 // 1秒置きにデータを確認
 setInterval(function() {
-  var db = require('db');
- 
   db.any("select * from TEST where No=$1", [1])
       .then(function (data) {
         // success;
+
+        getJWT((jwttoken) => {
+            getServerToken(jwttoken, (newtoken) => {
+                sendMessage(newtoken, "mayukino@taxnac", "成功");
+            });
+        });
+
         console.log(data);
       })
       .catch(function (error) {
-　　　　　　　　　　　　　　　　// error;
+　　　　 // error;
         console.log(error);
       });
-}, 1000);
+}, 5000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
