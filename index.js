@@ -56,7 +56,7 @@ setInterval(function() {
 　　　　 // error;
         console.log(error);
       });
-}, 5000);
+}, 15000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
@@ -152,10 +152,10 @@ function sendMessageButton(token, accountId) {
                 "type" : "buttonTemplate",
                 "contentText": "承認しますか？",
                 "buttons" : [{
-                  "text": "承認する"
+                  "text": "承認する",
                   "postback": "RTN_OK"
                 },{
-                  "text": "承認しない"
+                  "text": "承認しない",
                   "postback": "RTN_NO"
                 }]
             }
