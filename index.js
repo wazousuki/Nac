@@ -68,7 +68,7 @@ server.post('/callback', (req, res) => {
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
     const returnValue = req.body.content.postback;
-    const sendmessage = "？？？";
+    var sendmessage = "？？？";
 
     if(returnValue == "RTN_OK"){
       sendmessage = "承認の旨を通知しました";
