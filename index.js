@@ -40,15 +40,15 @@ server.get('/', (req, res) => {
 
 // 1秒置きにデータを確認
 setInterval(function() {
-    db.any("select * from TEST where No=$1", [1])
+    db.any("SELECT * FROM APPROVALREQUEST WHERE APPROVAL=${approval}", {approval:0})
       .then(function (data) {
         // success;
 
-        var message = "";
-
+        var message = data[0].MESSAGE;
+        var accountId = data[0].LINEWORKSACCOUNT
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageButton(newtoken, "mayukino@taxnac", message);
+                sendMessageButton(newtoken, accountId, message);
             });
         });
 
@@ -68,7 +68,7 @@ server.post('/callback', (req, res) => {
     const roomId = req.body.source.roomId;
     const accountId = req.body.source.accountId;
     const returnValue = req.body.content.postback;
-    var sendmessage = "？？？";
+    var sendmessage = "";
 
     if(returnValue == "RTN_OK"){
       sendmessage = "承認の旨を通知しました";
@@ -160,7 +160,7 @@ function sendMessageButton(token, accountId, message) {
             "accountId" : accountId,
             "content" : {
                 "type" : "buttonTemplate",
-                "contentText": "承認しますか？",
+                "contentText": message,
                 "buttons" : [{
                   "text": "承認する",
                   "postback": "RTN_OK"
