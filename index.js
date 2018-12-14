@@ -72,7 +72,7 @@ server.post('/callback', (req, res) => {
     var split = returnValue.split(",");
 
     if(split[0] == "RTN_OK"){
-      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1}, {applyNo:split[1]})
+      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:split[1]})
       .then(function (data) {
         // success;
         sendmessage = "承認の旨を通知しました";
