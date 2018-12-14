@@ -40,7 +40,7 @@ server.get('/', (req, res) => {
 
 // 1秒置きにデータを確認
 setInterval(function() {
-    db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE APPROVAL=${approval}", {approval:0})
+    db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
         // success;
 
