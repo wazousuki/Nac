@@ -43,12 +43,12 @@ setInterval(function() {
     db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
         // success;
-
+        var applyNo = data[0].No;
         var message = data[0].MESSAGE;
         var accountId = data[0].LINEWORKSACCOUNT
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageButton(newtoken, accountId, message);
+                sendMessageButton(newtoken, applyNo, accountId, message);
             });
         });
 
@@ -69,10 +69,20 @@ server.post('/callback', (req, res) => {
     const accountId = req.body.source.accountId;
     const returnValue = req.body.content.postback;
     var sendmessage = "";
+    var split = returnValue.split(",");
 
-    if(returnValue == "RTN_OK"){
-      sendmessage = "承認の旨を通知しました";
-    }else if(returnValue == "RTN_NO"){
+    if(split[0] == "RTN_OK"){
+      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=$2{applyNo}", {approval:1}, {applyNo:split[1]})
+      .then(function (data) {
+        // success;
+        sendmessage = "承認の旨を通知しました";
+        console.log(data);
+      })
+      .catch(function (error) {
+　　　　 // error;
+        console.log(error);
+      });
+    }else if(split[0] == "RTN_NO"){
       sendmessage = "不承認の旨を通知しました";
     }
 
@@ -147,7 +157,7 @@ function sendMessageText(token, accountId, message) {
     });
 }
 
-function sendMessageButton(token, accountId, message) {
+function sendMessageButton(token, applyNo, accountId, message) {
     const postdata = {
         url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
         headers : {
@@ -163,10 +173,10 @@ function sendMessageButton(token, accountId, message) {
                 "contentText": message,
                 "buttons" : [{
                   "text": "承認する",
-                  "postback": "RTN_OK"
+                  "postback": "RTN_OK," + applyNo
                 },{
                   "text": "承認しない",
-                  "postback": "RTN_NO"
+                  "postback": "RTN_NO," + applyNo
                 }]
             }
         }
