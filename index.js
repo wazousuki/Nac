@@ -52,13 +52,13 @@ setInterval(function() {
                 sendMessageButton(newtoken, applyNo, accountId, message, accountId_staff);
             });
         });
-        db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:applyNo)
         console.log(data);
       })
       .catch(function (error) {
 　　　　 // error;
         console.log(error);
       });
+    db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:applyNo)
 }, 10000);
 
 // Botからメッセージに応答
