@@ -58,7 +58,7 @@ setInterval(function() {
 　　　　 // error;
         console.log(error);
       });
-    db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:applyNo)
+    db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:applyNo})
 }, 10000);
 
 // Botからメッセージに応答
