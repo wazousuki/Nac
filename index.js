@@ -38,7 +38,7 @@ server.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-// 1秒置きにデータを確認
+// 10秒置きにデータを確認
 setInterval(function() {
     db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
@@ -46,9 +46,10 @@ setInterval(function() {
         var applyNo = data[0].No;
         var message = data[0].MESSAGE;
         var accountId = data[0].LINEWORKSACCOUNT
+        var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageButton(newtoken, applyNo, accountId, message);
+                sendMessageButton(newtoken, applyNo, accountId, message, accountId_staff);
             });
         });
 
@@ -58,7 +59,7 @@ setInterval(function() {
 　　　　 // error;
         console.log(error);
       });
-}, 30000);
+}, 10000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
@@ -75,6 +76,11 @@ server.post('/callback', (req, res) => {
       db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:4, applyNo:split[1]})
       .then(function (data) {
         // success;
+        getJWT((jwttoken) => {
+            getServerToken(jwttoken, (newtoken) => {
+                sendMessageText(newtoken, split[2], "有給休暇申請が承認されました");
+            });
+        });
         sendmessage = "承認の旨を通知しました";
         console.log(data);
       })
@@ -86,6 +92,11 @@ server.post('/callback', (req, res) => {
       db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:2 , applyNo:split[1]})
       .then(function (data) {
         // success;
+        getJWT((jwttoken) => {
+            getServerToken(jwttoken, (newtoken) => {
+                sendMessageText(newtoken, split[2], "有給休暇申請が承認されませんでした");
+            });
+        });
         sendmessage = "不承認の旨を通知しました";
         console.log(data);
       })
@@ -166,7 +177,7 @@ function sendMessageText(token, accountId, message) {
     });
 }
 
-function sendMessageButton(token, applyNo, accountId, message) {
+function sendMessageButton(token, applyNo, accountId, message, accountId_staff) {
     const postdata = {
         url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
         headers : {
@@ -182,10 +193,10 @@ function sendMessageButton(token, applyNo, accountId, message) {
                 "contentText": message,
                 "buttons" : [{
                   "text": "承認する",
-                  "postback": "RTN_OK," + applyNo
+                  "postback": "RTN_OK," + applyNo + "," + accountId_staff
                 },{
                   "text": "承認しない",
-                  "postback": "RTN_NO," + applyNo
+                  "postback": "RTN_NO," + applyNo + "," + accountId_staff
                 }]
             }
         }
