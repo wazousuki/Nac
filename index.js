@@ -43,7 +43,7 @@ setInterval(function() {
     db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
         // success;
-        var applyNo = data[0].NO;
+        var applyNo = data[0].No;
         var message = data[0].MESSAGE;
         var accountId = data[0].LINEWORKSACCOUNT
         var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
