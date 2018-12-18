@@ -59,6 +59,14 @@ setInterval(function() {
         console.log(error);
       });
     db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:applyNo})
+    .then(function (data) {
+      // success;
+      console.log(data);
+    })
+    .catch(function (error) {
+　　　　 // error;
+      console.log(error);
+    });
 }, 10000);
 
 // Botからメッセージに応答
