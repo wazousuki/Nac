@@ -45,11 +45,12 @@ setInterval(function() {
         // success;
         var applyNo = data[0].No;
         var message = data[0].MESSAGE;
-        var accountId = data[0].LINEWORKSACCOUNT
+        var name_authorizer= data[0].NAME_AUTHORIZER
+        var accountId_authorizer= data[0].LINEWORKSACCOUNT_AUTHORIZER
         var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageButton(newtoken, applyNo, accountId, message, accountId_staff);
+                sendMessageButton(newtoken, applyNo, accountId_authorizer, message, accountId_staff, name_authorizer);
             });
         });
         console.log(data);
@@ -88,7 +89,7 @@ server.post('/callback', (req, res) => {
         // success;
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageText(newtoken, split[2], "有給休暇申請が承認されました");
+                sendMessageText(newtoken, split[2], "有給休暇申請が承認されました" + " (" + split[3] + ")");
             });
         });
         sendmessage = "承認の旨を通知しました";
@@ -104,7 +105,7 @@ server.post('/callback', (req, res) => {
         // success;
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageText(newtoken, split[2], "有給休暇申請が承認されませんでした");
+                sendMessageText(newtoken, split[2], "有給休暇申請が承認されませんでした" + " (" + split[3] + ")");
             });
         });
         sendmessage = "不承認の旨を通知しました";
@@ -187,7 +188,7 @@ function sendMessageText(token, accountId, message) {
     });
 }
 
-function sendMessageButton(token, applyNo, accountId, message, accountId_staff) {
+function sendMessageButton(token, applyNo, accountId_authorizer, message, accountId_staff, name_authorizer) {
     const postdata = {
         url: 'https://apis.worksmobile.com/' + APIID + '/message/sendMessage/v2',
         headers : {
@@ -203,10 +204,10 @@ function sendMessageButton(token, applyNo, accountId, message, accountId_staff) 
                 "contentText": message,
                 "buttons" : [{
                   "text": "承認する",
-                  "postback": "RTN_OK," + applyNo + "," + accountId_staff
+                  "postback": "RTN_OK," + applyNo + "," + accountId_staff + "," + name_authorizer
                 },{
                   "text": "承認しない",
-                  "postback": "RTN_NO," + applyNo + "," + accountId_staff
+                  "postback": "RTN_NO," + applyNo + "," + accountId_staff + "," + name_authorizer
                 }]
             }
         }
