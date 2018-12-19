@@ -43,7 +43,7 @@ setInterval(function() {
     db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
         // success;
-        var applyNo = data[0].No;
+        var applyNo = data[0].REQUESTNO;
         var message = data[0].MESSAGE;
         var name_authorizer= data[0].NAME_AUTHORIZER
         var accountId_authorizer= data[0].LINEWORKSACCOUNT_AUTHORIZER
@@ -55,7 +55,7 @@ setInterval(function() {
         });
         console.log(data);
 
-        db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:1 , applyNo:applyNo})
+        db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:1 , applyNo:applyNo})
         .then(function (data) {
           // success;
           console.log(data);
@@ -84,7 +84,7 @@ server.post('/callback', (req, res) => {
     var split = returnValue.split(",");
 
     if(split[0] == "RTN_OK"){
-      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:4, applyNo:split[1]})
+      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:4, applyNo:split[1]})
       .then(function (data) {
         // success;
         getJWT((jwttoken) => {
@@ -100,7 +100,7 @@ server.post('/callback', (req, res) => {
         console.log(error);
       });
     }else if(split[0] == "RTN_NO"){
-      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"No\"=${applyNo}", {approval:2 , applyNo:split[1]})
+      db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:2 , applyNo:split[1]})
       .then(function (data) {
         // success;
         getJWT((jwttoken) => {
