@@ -198,7 +198,7 @@ function sendMessageButton(token, applyNo, accountId_authorizer, message, accoun
         },
         json: {
             "botNo" : Number(BOTNO),
-            "accountId" : accountId,
+            "accountId" : accountId_authorizer,
             "content" : {
                 "type" : "buttonTemplate",
                 "contentText": message,
