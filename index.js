@@ -105,7 +105,7 @@ server.post('/callback', (req, res) => {
         // success;
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
-                sendMessageText(newtoken, split[2], "有給休暇申請が承認されませんでした" + " (" + split[3] + ")");
+                sendMessageText(newtoken, split[2], "有給休暇申請は承認されませんでした" + " (" + split[3] + ")");
             });
         });
         sendmessage = "不承認の旨を通知しました";
