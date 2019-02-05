@@ -40,9 +40,10 @@ server.get('/', (req, res) => {
 
 // 10秒置きにデータを確認
 setInterval(function() {
-    db.one("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
+    db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
         // success;
+        if(data.records.length){
           var applyNo = data[0].REQUESTNO;
           var message = data[0].MESSAGE;
           var name_authorizer= data[0].NAME_AUTHORIZER
@@ -60,7 +61,7 @@ setInterval(function() {
             // success;
             console.log(data);
           })
-
+        }
         .catch(function (error) {
     　　　　 // error;
           console.log(error);
