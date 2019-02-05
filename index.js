@@ -43,23 +43,25 @@ setInterval(function() {
     db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
       .then(function (data) {
         // success;
-        var applyNo = data[0].REQUESTNO;
-        var message = data[0].MESSAGE;
-        var name_authorizer= data[0].NAME_AUTHORIZER
-        var accountId_authorizer= data[0].LINEWORKSACCOUNT_AUTHORIZER
-        var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
-        getJWT((jwttoken) => {
-            getServerToken(jwttoken, (newtoken) => {
-                sendMessageButton(newtoken, applyNo, accountId_authorizer, message, accountId_staff, name_authorizer);
-            });
-        });
-        console.log(data);
-
-        db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:1 , applyNo:applyNo})
-        .then(function (data) {
-          // success;
+          if(data.length > 0){
+          var applyNo = data[0].REQUESTNO;
+          var message = data[0].MESSAGE;
+          var name_authorizer= data[0].NAME_AUTHORIZER
+          var accountId_authorizer= data[0].LINEWORKSACCOUNT_AUTHORIZER
+          var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
+          getJWT((jwttoken) => {
+              getServerToken(jwttoken, (newtoken) => {
+                  sendMessageButton(newtoken, applyNo, accountId_authorizer, message, accountId_staff, name_authorizer);
+              });
+          });
           console.log(data);
-        })
+
+          db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:1 , applyNo:applyNo})
+          .then(function (data) {
+            // success;
+            console.log(data);
+          })
+        }
         .catch(function (error) {
     　　　　 // error;
           console.log(error);
