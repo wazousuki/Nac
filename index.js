@@ -90,14 +90,15 @@ server.post('/callback', (req, res) => {
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
                 sendMessageText(newtoken, split[2], "有給休暇申請が承認されました" + " (" + split[3] + ")");
-            });
-        });
-          console.log(data);
-        getJWT((jwttoken) => {
-            getServerToken(jwttoken, (newtoken) => {
                 sendMessageText(newtoken, accountId, "承認の旨を通知しました");
             });
         });
+        console.log(data);
+//        getJWT((jwttoken) => {
+//            getServerToken(jwttoken, (newtoken) => {
+//                sendMessageText(newtoken, accountId, "承認の旨を通知しました");
+//            });
+//        });
       })
       .catch(function (error) {
 　　　　 // error;
