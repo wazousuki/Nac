@@ -38,40 +38,39 @@ server.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-  // 10秒置きにデータを確認
-  setInterval(function() {
-      db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
+// 10秒置きにデータを確認
+setInterval(function() {
+    db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
+      .then(function (data) {
+        // success;
+        var applyNo = data[0].REQUESTNO;
+        var message = data[0].MESSAGE;
+        var name_authorizer= data[0].NAME_AUTHORIZER
+        var accountId_authorizer= data[0].LINEWORKSACCOUNT_AUTHORIZER
+        var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
+        getJWT((jwttoken) => {
+            getServerToken(jwttoken, (newtoken) => {
+                sendMessageButton(newtoken, applyNo, accountId_authorizer, message, accountId_staff, name_authorizer);
+            });
+        });
+        console.log(data);
+
+        db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:1 , applyNo:applyNo})
         .then(function (data) {
           // success;
-          if(data.exists == true){
-            var applyNo = data[0].REQUESTNO;
-            var message = data[0].MESSAGE;
-            var name_authorizer= data[0].NAME_AUTHORIZER
-            var accountId_authorizer= data[0].LINEWORKSACCOUNT_AUTHORIZER
-            var accountId_staff = data[0].LINEWORKSACCOUNT_STAFF
-            getJWT((jwttoken) => {
-                getServerToken(jwttoken, (newtoken) => {
-                    sendMessageButton(newtoken, applyNo, accountId_authorizer, message, accountId_staff, name_authorizer);
-                });
-            });
-            console.log(data);
-
-            db.none("UPDATE public.\"APPROVALREQUEST\" SET \"APPROVAL\"=${approval} WHERE \"REQUESTNO\"=${applyNo}", {approval:1 , applyNo:applyNo})
-            .then(function (data) {
-              // success;
-              console.log(data);
-            })
-            .catch(function (error) {
-        　　　　 // error;
-              console.log(error);
-            });
-        }
+          console.log(data);
         })
         .catch(function (error) {
-  　　　　 // error;
+    　　　　 // error;
           console.log(error);
         });
-  }, 10000);
+
+      })
+      .catch(function (error) {
+　　　　 // error;
+        console.log(error);
+      });
+}, 10000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
@@ -93,12 +92,8 @@ server.post('/callback', (req, res) => {
                 sendMessageText(newtoken, split[2], "有給休暇申請が承認されました" + " (" + split[3] + ")");
             });
         });
+        sendmessage = "承認の旨を通知しました";
         console.log(data);
-        getJWT((jwttoken) => {
-            getServerToken(jwttoken, (newtoken) => {
-                sendMessageText(newtoken, accountId, "承認の旨を通知しました");
-            });
-        });
       })
       .catch(function (error) {
 　　　　 // error;
@@ -113,12 +108,8 @@ server.post('/callback', (req, res) => {
                 sendMessageText(newtoken, split[2], "有給休暇申請は承認されませんでした" + " (" + split[3] + ")");
             });
         });
+        sendmessage = "不承認の旨を通知しました";
         console.log(data);
-        getJWT((jwttoken) => {
-            getServerToken(jwttoken, (newtoken) => {
-                sendMessageText(newtoken, accountId, "不承認の旨を通知しました");
-            });
-        });
       })
       .catch(function (error) {
 　　　　 // error;
@@ -126,6 +117,11 @@ server.post('/callback', (req, res) => {
       });
     }
 
+    getJWT((jwttoken) => {
+        getServerToken(jwttoken, (newtoken) => {
+            sendMessageText(newtoken, accountId, sendmessage);
+        });
+    });
 });
 
 //サーバーAPI用JWT取得
