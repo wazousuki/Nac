@@ -111,14 +111,15 @@ server.post('/callback', (req, res) => {
         getJWT((jwttoken) => {
             getServerToken(jwttoken, (newtoken) => {
                 sendMessageText(newtoken, split[2], "有給休暇申請は承認されませんでした" + " (" + split[3] + ")");
-            });
+                sendMessageText(newtoken, accountId, "不承認の旨を通知しました");
+          });
         });
         console.log(data);
-        getJWT((jwttoken) => {
-            getServerToken(jwttoken, (newtoken) => {
-                sendMessageText(newtoken, accountId, "不承認の旨を通知しました");
-            });
-        });
+//        getJWT((jwttoken) => {
+//            getServerToken(jwttoken, (newtoken) => {
+//                sendMessageText(newtoken, accountId, "不承認の旨を通知しました");
+//            });
+//        });
       })
       .catch(function (error) {
 　　　　 // error;
