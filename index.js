@@ -61,18 +61,17 @@ setInterval(function() {
             // success;
             console.log(data);
           })
+          .catch(function (error) {
+        　　　　 // error;
+              console.log(error);
+            });
         }
-        .catch(function (error) {
-    　　　　 // error;
-          console.log(error);
-        });
-
       })
       .catch(function (error) {
-　　　　 // error;
+        // error;
         console.log(error);
-      });
-}, 10000);
+        });
+  }, 10000);
 
 // Botからメッセージに応答
 server.post('/callback', (req, res) => {
