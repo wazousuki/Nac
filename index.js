@@ -43,7 +43,7 @@ server.get('/', (req, res) => {
       db.any("SELECT * FROM public.\"APPROVALREQUEST\" WHERE \"APPROVAL\"=${approval}", {approval:0})
         .then(function (data) {
           // success;
-          if(data.exists == true){
+          //if(data.exists == true){
             var applyNo = data[0].REQUESTNO;
             var message = data[0].MESSAGE;
             var name_authorizer= data[0].NAME_AUTHORIZER
@@ -65,7 +65,7 @@ server.get('/', (req, res) => {
         　　　　 // error;
               console.log(error);
             });
-        }
+        //}
         })
         .catch(function (error) {
   　　　　 // error;
